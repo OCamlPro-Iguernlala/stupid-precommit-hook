@@ -1,0 +1,20 @@
+#!/bin/sh
+
+files=`find ./ -regex .*[.]ml[ily]?`
+
+cpt=0
+
+for f in $files ; do
+    .git/hooks/ocp-checker $f
+    if ! [ "$?" -eq "0" ] ; then
+        cpt=$((cpt+1))
+    fi
+done
+
+if [ $cpt -eq 0 ] ; then
+    exit 0
+else
+    #echo "White spaces detected and removed in *.ml* files"
+    echo "Some fixes are needed before you can commit"
+    exit 1
+fi

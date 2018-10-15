@@ -5,9 +5,10 @@ files=`find ./ -regex .*[.]ml[ily]?`
 cpt=0
 
 for f in $files ; do
-    # only check files that are not untracked
-    status=`git status $f -s`
-    if ! [ "`echo $status | cut -d' ' -f1`" = "??" ] ; then
+    # only check files that are not untracked and not ignored
+    status=`git status $f -s --ignored`
+    res=`echo $status | cut -d' ' -f1`
+    if ! [ "$res" = "??" ] && ! [ "$res" = "!!" ] ; then
         .git/hooks/ocp-checker $f
         if ! [ "$?" -eq "0" ] ; then
             cpt=$((cpt+1))
